@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:frontend/component/viewmodel/map_redirect.dart';
 
 class RedirectionMap extends StatefulWidget {
-  const RedirectionMap({super.key});
+  RedirectionMap(this.lat, this.lon, {super.key});
+  // ignore: prefer_typing_uninitialized_variables
+  var lat;
+  // ignore: prefer_typing_uninitialized_variables
+  var lon;
 
   @override
   State<RedirectionMap> createState() => _RedirectionMapState();
@@ -16,7 +20,7 @@ class _RedirectionMapState extends State<RedirectionMap> {
         child: ElevatedButton(
           child: const Text("MAP"),
           onPressed: () {
-            MapRedirect.openMap(47.628293260721,-122.34263420105);
+            MapRedirect.openMap(widget.lat,widget.lon);
           },
         ),
       ),
