@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/component/utils/User.dart';
+import 'package:frontend/component/view/volunteer_signup_view.dart';
+import 'package:frontend/service/login_service.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -45,7 +48,7 @@ class _LoginViewState extends State<LoginView> {
                       Text(
                         "Login",
                         style: TextStyle(
-                          fontFamily: "Raleway",
+                          // fontFamily: "Raleway",
                           fontSize: width / 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -60,12 +63,12 @@ class _LoginViewState extends State<LoginView> {
                           controller: username,
                           textAlign: TextAlign.justify,
                           decoration: InputDecoration(
-                            label: const Text("username",style: TextStyle(fontFamily: "Raleway-SemiBold"),),
+                            label: const Text("username",style: TextStyle(),),
                             suffixIcon: const Icon(Icons.person_outline),
                             labelStyle: TextStyle(
                               color: const Color(0xFF031149),
                               fontSize: width / 20,
-                              fontFamily: "Raleway-SemiBold",
+                              // fontFamily: "Raleway-SemiBold",
                             ),
                           ),
                         ),
@@ -84,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
                             label: const Text("password"),
                             labelStyle: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontFamily: "Raleway-SemiBold",
+                              // fontFamily: "Raleway-SemiBold",
                               color: const Color(0xFF031149),
                               fontSize: width / 20,
                             ),
@@ -121,7 +124,10 @@ class _LoginViewState extends State<LoginView> {
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-
+                              User.username = username.text;
+                              User.pass = password.text;
+                              User.type = 'Admin'==_selectedCharacter!;
+                              validateUser();
                             });
                           },
                           style: ElevatedButton.styleFrom(
@@ -136,12 +142,22 @@ class _LoginViewState extends State<LoginView> {
                             "Login",
                             style: TextStyle(
                               color: Colors.white,
-                              fontFamily: "Raleway-SemiBold",
+                              // fontFamily: "Raleway-SemiBold",
                               fontSize: width / 20,
                             ),
                           ),
                         ),
                       ),
+
+                      const Text("Dont have an account"),
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const VolunteerSignupView()));
+                      }, 
+                      child: const Text(
+                        "signup")
+                      )
                     ],
                   ),
                 ),
