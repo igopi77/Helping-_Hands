@@ -56,12 +56,6 @@ flutter:
     - family: Raleway
       fonts:
         - asset: assets/font/Raleway-Black.ttf
-    #    - family: Raleway-Bold
-    #      fonts:
-    #        - asset: assets/font/Raleway-Bold.ttf
-    - family: Raleway-SemiBold
-      fonts:
-        - asset: assets/font/Raleway-SemiBold.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
