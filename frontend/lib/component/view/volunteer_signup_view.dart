@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/component/utils/getVolunteerDetails.dart';
 
 class VolunteerSignupView extends StatefulWidget {
   const VolunteerSignupView({super.key});
@@ -10,133 +8,146 @@ class VolunteerSignupView extends StatefulWidget {
 }
 
 class _VolunteerSignupViewState extends State<VolunteerSignupView> {
-
-  final List<String> survivalSkills = [
-    'First Aid',
-    'Fire Starting',
-    'Shelter Building',
-    'Water Sourcing',
-    'Food Foraging',
-    'Basic Cooking',
-    'Self-defense',
-    'Emergency Signaling',
-    'Emergency Preparedness'
-  ];
-  GetVolunteer getVolunteer = GetVolunteer();
-  late List<bool> checkboxDetails ;
-  @override
-  void initState(){
-    super.initState();
-    checkboxDetails = List<bool>.filled(survivalSkills.length, false);
-  }
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    TextEditingController username = TextEditingController();
+    TextEditingController password = TextEditingController();
+    TextEditingController phone = TextEditingController();
     return Scaffold(
-      //backgroundColor: Colors.black38,
       body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-          child: bodyPartOfSignup()),
-    );
-  }
-
-  Widget bodyPartOfSignup(){
-    TextEditingController usernameController = TextEditingController();
-    TextEditingController passController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-    List<String> fieldForSignUp = [
-      "Username",
-      "Password",
-      "Phone no",
-    ];
-    List<TextEditingController> fieldForSignUpController = [
-      usernameController,
-      passController,
-      phoneController,
-    ];
-    GetVolunteer getVolunteer = GetVolunteer();
-    return Padding(
-      padding: const EdgeInsets.only(left: 15,right: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(padding: EdgeInsets.only(top: 50)),
-          Text("Sign Up",style: TextStyle(fontFamily : "Raleway",fontSize: 25,color: Colors.black,fontWeight: FontWeight.bold),),
-          Padding(padding: EdgeInsets.only(top: 30)),
-          loginContainer(fieldForSignUp,fieldForSignUpController),
-          Padding(padding: EdgeInsets.only(top: 15)),
-          Text("Skills",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold
-          ),),
-          checkboxF(),
-          Padding(padding: EdgeInsets.only(top: 15)),
-          Center(
-            child: MaterialButton(
-              onPressed: () {
-                getVolunteer.get(fieldForSignUpController, checkboxDetails);
-              },
-              child: Text("Submit",style: TextStyle(fontSize: 16,fontFamily: "Raleway-SemiBold",color: Colors.white),),
-              color: Colors.blue,
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF031149), Color.fromARGB(255, 68, 79, 123)],
             ),
           ),
-        ],
-      ),
-    );
-  }
-  Widget checkboxF(){
-    return Padding(
-      padding: const EdgeInsets.only(left: 15,right: 15),
-      child: Column(
-        children: List.generate(survivalSkills.length, (index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Text("${survivalSkills[index]}",style: TextStyle(fontFamily: "Raleway-SemiBold",fontSize: 17,color: Colors.black),),
-              Checkbox(
-                value: checkboxDetails[index],
-                onChanged: (value) {
-                  setState(() {
-                    checkboxDetails[index] = value!;
-                  });
-                },
-                // activeColor: Colors.white,
-
-              ),
-            ],
-          );
-        }),
-      ),
-    );
-  }
-  Widget loginContainer(List<String> fieldForSignUp,List<TextEditingController> fieldForSignUpController){
-    return Column(
-      children: [
-        Column(
-          children: List.generate(fieldForSignUp.length, (index) {
-            return Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.black,width: 1)
-                  ),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      hintText: fieldForSignUp[index],
-                      hintStyle: TextStyle(fontSize: 16,color: Colors.grey)
-                    ),
-                    controller: fieldForSignUpController[index],
-                    obscureText: fieldForSignUp[index]=="Password" ? true : false,
+              Padding(padding: EdgeInsets.only(top: width / 2)),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(width / 10),
+                    topLeft: Radius.circular(width / 10),
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(top: 15))
-              ],
-            );
-          }),
-        )
-      ],
+                width: width,
+                child: Padding(
+                  padding: EdgeInsets.all(width / 20),
+                  child: Column(
+                    children: [
+                      Padding(padding: EdgeInsets.only(top: width / 20)),
+                      Text(
+                        "Sign up",
+                        style: TextStyle(
+                          fontFamily: "Raleway",
+                          fontSize: width / 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: width / 15)),
+                      Container(
+                        width: width - 2 * width / 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(width / 40),
+                        ),
+                        child: TextField(
+                          controller: username,
+                          textAlign: TextAlign.justify,
+                          decoration: InputDecoration(
+                            label: const Text("username",),
+                            suffixIcon: const Icon(Icons.person_outline),
+                            labelStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF031149),
+                              fontSize: width / 20,
+                              fontFamily: "Raleway-SemiBold",
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: width / 15)),
+                      Container(
+                        width: width - 2 * width / 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(width / 40),
+                        ),
+                        child: TextField(
+                          controller: password,
+                          obscureText: true,
+                          textAlign: TextAlign.justify,
+                          decoration: InputDecoration(
+                            label: const Text("password"),
+                            labelStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Raleway-SemiBold",
+                              color: const Color(0xFF031149),
+                              fontSize: width / 20,
+                            ),
+                            suffixIcon: const Icon(Icons.remove_red_eye),
+                          ),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: width / 15)),
+                      Container(
+                        width: width - 2 * width / 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(width / 40),
+                        ),
+                        child: TextField(
+                          controller: phone,
+                          obscureText: true,
+                          textAlign: TextAlign.justify,
+                          decoration: InputDecoration(
+                            label: const Text("phone number"),
+                            labelStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Raleway-SemiBold",
+                              color: const Color(0xFF031149),
+                              fontSize: width / 20,
+                            ),
+                            suffixIcon: const Icon(Icons.phone),
+                          ),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: width / 10)),
+                      Padding(padding: EdgeInsets.only(top: width / 20)),
+                      SizedBox(
+                        width: width - 2 * width / 20,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                            const Color.fromARGB(255, 24, 40, 103),
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+                          child: Text(
+                            "Sign up",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Raleway-SemiBold",
+                              fontSize: width / 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
-
 }
