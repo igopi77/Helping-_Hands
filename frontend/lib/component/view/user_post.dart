@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Post extends StatefulWidget {
@@ -9,13 +10,18 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  late double latitude;
+  late double longitude;
   final ImagePicker _picker = ImagePicker();
-  XFile? _image;
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  XFile? _image; // Store the selected image here
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(width / 20),
@@ -49,75 +55,74 @@ class _PostState extends State<Post> {
               ),
             ),
             Padding(padding: EdgeInsets.only(top: width / 20)),
+            // Display the selected image
+            if (_image != null)
+              Image.network(
+                _image!.path, // Replace with the URL of your image
+                width: 200, // Adjust width as needed
+                height: 200, // Adjust height as needed
+              ),
             ElevatedButton(
               onPressed: () {
-                _settingModalBottomSheet(context); // Call the modal bottom sheet
+                _handleLocationPermission().then((granted) {
+                  if (granted) {
+                    _getCurrentPosition();
+                  }
+                });
               },
-              child: const Text(
-                "Open camera & take photo",
-              ),
+              child: const Text("Submit"),
             ),
-            ElevatedButton(onPressed: () {}, child: const Text("Submit")),
           ],
         ),
       ),
     );
   }
 
-  Future<void> getImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = image;
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      _showSnackBar('Location services are disabled. Please enable the services');
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        _showSnackBar('Location permissions are denied');
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      _showSnackBar('Location permissions are permanently denied, we cannot request permissions.');
+      return false;
+    }
+    return true;
+  }
+
+  void _showSnackBar(String message) {
+    _scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _getCurrentPosition() async {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) {
+      print(position.latitude);
+      print(position.longitude);
+      latitude = position.latitude;
+      longitude = position.longitude;
+    }).catchError((e) {
+      debugPrint(e.toString());
     });
   }
 
-  void _settingModalBottomSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                  title: new Text('Gallery'),
-                  onTap: () => {
-                    imageSelector(context, "gallery"),
-                    Navigator.pop(context),
-                  },
-                ),
-                new ListTile(
-                  title: new Text('Camera'),
-                  onTap: () => {
-                    imageSelector(context, "camera"),
-                    Navigator.pop(context),
-                  },
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  //********************** IMAGE PICKER
-  Future imageSelector(BuildContext context, String pickerType) async {
-    switch (pickerType) {
-      case "gallery":
-
-        /// GALLERY IMAGE PICKER
-        final XFile? image =
-            await _picker.pickImage(source: ImageSource.gallery);
-        setState(() {
-          _image = image;
-        });
-        break;
-
-      case "camera": // CAMERA CAPTURE CODE
-        final XFile? image =
-            await _picker.pickImage(source: ImageSource.camera);
-        setState(() {
-          _image = image;
-        });
-        break;
+  Future<void> getImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _image = image;
+      });
     }
   }
 }
