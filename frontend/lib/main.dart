@@ -15,12 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/post",
+      initialRoute: "/volunteerHome",
       routes: {
         "/volunteerSign" : (context) => const VolunteerSignupView(),
         "/volunteerHome" : (context) => const VolunteerHomeView(),
         "/volunteerProfile" : (context) => const VolunteerProfileView(),
-        '/redirect' : (context) => const RedirectionMap(),
+        '/redirect' : (context) => RedirectionMap(null,null),
         '/post' :(context) => const Post(),
       },
     );
