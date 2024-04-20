@@ -49,14 +49,7 @@ class _PostState extends State<Post> {
               ),
             ),
             Padding(padding: EdgeInsets.only(top: width / 20)),
-            ElevatedButton(
-              onPressed: () {
-                _settingModalBottomSheet(context); // Call the modal bottom sheet
-              },
-              child: const Text(
-                "Open camera & take photo",
-              ),
-            ),
+        
             ElevatedButton(onPressed: () {}, child: const Text("Submit")),
           ],
         ),
@@ -71,53 +64,4 @@ class _PostState extends State<Post> {
     });
   }
 
-  void _settingModalBottomSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                  title: new Text('Gallery'),
-                  onTap: () => {
-                    imageSelector(context, "gallery"),
-                    Navigator.pop(context),
-                  },
-                ),
-                new ListTile(
-                  title: new Text('Camera'),
-                  onTap: () => {
-                    imageSelector(context, "camera"),
-                    Navigator.pop(context),
-                  },
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  //********************** IMAGE PICKER
-  Future imageSelector(BuildContext context, String pickerType) async {
-    switch (pickerType) {
-      case "gallery":
-
-        /// GALLERY IMAGE PICKER
-        final XFile? image =
-            await _picker.pickImage(source: ImageSource.gallery);
-        setState(() {
-          _image = image;
-        });
-        break;
-
-      case "camera": // CAMERA CAPTURE CODE
-        final XFile? image =
-            await _picker.pickImage(source: ImageSource.camera);
-        setState(() {
-          _image = image;
-        });
-        break;
-    }
-  }
 }
