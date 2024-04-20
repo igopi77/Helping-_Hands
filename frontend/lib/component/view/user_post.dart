@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -80,6 +82,32 @@ class _PostState extends State<Post> {
       ),
     );
   }
+  // void _sendMessage(String message, List<String> recipients) async {
+  //   String recipientsString = recipients.join(',');
+  //   String uri = 'sms:$recipientsString?body=${Uri.encodeComponent(message)}';
+  //
+  //   if (await canLaunch(uri)) {
+  //     await launch(uri);
+  //   } else {
+  //     // Fallback option: Display a dialog or provide alternative way to send SMS
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Text('Failed to send SMS'),
+  //         content: Text('Unable to launch SMS app. Please send the SMS manually.'),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               // Implement your fallback action here
+  //             },
+  //             child: Text('OK'),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  // }
+
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;

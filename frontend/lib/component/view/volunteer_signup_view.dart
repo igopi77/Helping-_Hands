@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/component/utils/getVolunteerDetails.dart';
 
 class VolunteerSignupView extends StatefulWidget {
   const VolunteerSignupView({super.key});
@@ -21,6 +22,7 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
     'Emergency Signaling',
     'Emergency Preparedness'
   ];
+  GetVolunteer getVolunteer = GetVolunteer();
   late List<bool> checkboxDetails ;
   @override
   void initState(){
@@ -51,6 +53,7 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
       passController,
       phoneController,
     ];
+    GetVolunteer getVolunteer = GetVolunteer();
     return Padding(
       padding: const EdgeInsets.only(left: 15,right: 15),
       child: Column(
@@ -68,7 +71,7 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
           Center(
             child: MaterialButton(
               onPressed: () {
-
+                getVolunteer.get(fieldForSignUpController, checkboxDetails);
               },
               child: Text("Submit",style: TextStyle(fontSize: 16,fontFamily: "Raleway-SemiBold",color: Colors.white),),
               color: Colors.blue,

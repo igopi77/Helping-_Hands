@@ -40,6 +40,7 @@ dependencies:
   image_field: ^0.0.10
   geolocator: ^11.0.0
   geocoding: ^3.0.0
+  flutter_sms: ^2.3.3
 
 dev_dependencies:
   flutter_test:
@@ -57,10 +58,16 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-#  fonts:
-#    - family: Raleway
-#      fonts:
-#        - asset: assets/font/Raleway-Black.ttf
+  fonts:
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway-Black.ttf
+    #    - family: Raleway-Bold
+    #      fonts:
+    #        - asset: assets/font/Raleway-Bold.ttf
+    - family: Raleway-SemiBold
+      fonts:
+        - asset: assets/fonts/Raleway-SemiBold.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
