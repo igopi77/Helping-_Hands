@@ -13,8 +13,9 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("HOME",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.blue),),
+        title: const Text("HELPING HANDS",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.white,fontFamily: "Raleway"),),
         centerTitle: true,
+        backgroundColor: Color(0xFF031149),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
