@@ -1,10 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/service/user_post_service.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_sms/flutter_sms.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -14,12 +13,11 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  late Map<String,dynamic> obj= {};
+  late String base64Image;
   late double latitude;
   late double longitude;
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
-  GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   XFile? _image; // Store the selected image here
 
   @override
@@ -56,7 +54,15 @@ class _PostState extends State<Post> {
                   "Select image",
                 ),
                 onPressed: () {
-                  getImage();
+                  _handleLocationPermission().then((granted) {
+                    if (granted) {
+                      _getCurrentPosition().then((positionGranted) {
+                        if (positionGranted) {
+                          getImageAndPost();
+                        }
+                      });
+                    }
+                  });
                 },
               ),
             ),
@@ -71,7 +77,11 @@ class _PostState extends State<Post> {
               onPressed: () {
                 _handleLocationPermission().then((granted) {
                   if (granted) {
-                    _getCurrentPosition();
+                    _getCurrentPosition().then((positionGranted) {
+                      if (positionGranted) {
+                        getImageAndPost();
+                      }
+                    });
                   }
                 });
               },
@@ -82,32 +92,6 @@ class _PostState extends State<Post> {
       ),
     );
   }
-  // void _sendMessage(String message, List<String> recipients) async {
-  //   String recipientsString = recipients.join(',');
-  //   String uri = 'sms:$recipientsString?body=${Uri.encodeComponent(message)}';
-  //
-  //   if (await canLaunch(uri)) {
-  //     await launch(uri);
-  //   } else {
-  //     // Fallback option: Display a dialog or provide alternative way to send SMS
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
-  //         title: Text('Failed to send SMS'),
-  //         content: Text('Unable to launch SMS app. Please send the SMS manually.'),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               // Implement your fallback action here
-  //             },
-  //             child: Text('OK'),
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
-
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -137,28 +121,30 @@ class _PostState extends State<Post> {
     _scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _getCurrentPosition() async {
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) {
+  Future<bool> _getCurrentPosition() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       print(position.latitude);
       print(position.longitude);
       latitude = position.latitude;
       longitude = position.longitude;
-    }).catchError((e) {
+      return true;
+    } catch (e) {
       debugPrint(e.toString());
-    });
+      return false;
+    }
   }
 
-  Future<void> getImage() async {
+  Future<void> getImageAndPost() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         _image = image;
       });
       List<int> imageBytes = await image.readAsBytes();
-    
-      String base64Image = base64Encode(imageBytes);
-      
+      base64Image = base64Encode(imageBytes);
       print('Base64 Image: $base64Image');
+      await UserPost(base64Image, latitude, longitude);
     }
   }
 }
