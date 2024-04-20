@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,11 +12,12 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  late Map<String,dynamic> obj= {};
   late double latitude;
   late double longitude;
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+  GlobalKey<ScaffoldMessengerState>();
   XFile? _image; // Store the selected image here
 
   @override
@@ -34,6 +37,7 @@ class _PostState extends State<Post> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: width / 20,
+                fontFamily: "RaleWay",
               ),
             ),
             Padding(padding: EdgeInsets.only(top: width / 20)),
@@ -55,7 +59,6 @@ class _PostState extends State<Post> {
               ),
             ),
             Padding(padding: EdgeInsets.only(top: width / 20)),
-            // Display the selected image
             if (_image != null)
               Image.network(
                 _image!.path, // Replace with the URL of your image
@@ -123,6 +126,11 @@ class _PostState extends State<Post> {
       setState(() {
         _image = image;
       });
+      List<int> imageBytes = await image.readAsBytes();
+    
+      String base64Image = base64Encode(imageBytes);
+      
+      print('Base64 Image: $base64Image');
     }
   }
 }
