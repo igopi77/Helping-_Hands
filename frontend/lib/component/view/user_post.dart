@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -49,75 +51,48 @@ class _PostState extends State<Post> {
               ),
             ),
             Padding(padding: EdgeInsets.only(top: width / 20)),
-            ElevatedButton(
-              onPressed: () {
-                _settingModalBottomSheet(context); // Call the modal bottom sheet
-              },
-              child: const Text(
-                "Open camera & take photo",
-              ),
-            ),
-            ElevatedButton(onPressed: () {}, child: const Text("Submit")),
+            ElevatedButton(onPressed: () {
+              String message = "Please check your phone";
+              List<String> recipents = ["9344751909","6383269048"];
+              //_sendMessage(message,recipents);
+            }, child: const Text("Submit")),
           ],
         ),
       ),
     );
   }
+  // void _sendMessage(String message, List<String> recipients) async {
+  //   String recipientsString = recipients.join(',');
+  //   String uri = 'sms:$recipientsString?body=${Uri.encodeComponent(message)}';
+  //
+  //   if (await canLaunch(uri)) {
+  //     await launch(uri);
+  //   } else {
+  //     // Fallback option: Display a dialog or provide alternative way to send SMS
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Text('Failed to send SMS'),
+  //         content: Text('Unable to launch SMS app. Please send the SMS manually.'),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               // Implement your fallback action here
+  //             },
+  //             child: Text('OK'),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  // }
 
-  Future<void> getImage() async {
+
+
+Future<void> getImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = image;
     });
-  }
-
-  void _settingModalBottomSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                  title: new Text('Gallery'),
-                  onTap: () => {
-                    imageSelector(context, "gallery"),
-                    Navigator.pop(context),
-                  },
-                ),
-                new ListTile(
-                  title: new Text('Camera'),
-                  onTap: () => {
-                    imageSelector(context, "camera"),
-                    Navigator.pop(context),
-                  },
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  //********************** IMAGE PICKER
-  Future imageSelector(BuildContext context, String pickerType) async {
-    switch (pickerType) {
-      case "gallery":
-
-        /// GALLERY IMAGE PICKER
-        final XFile? image =
-            await _picker.pickImage(source: ImageSource.gallery);
-        setState(() {
-          _image = image;
-        });
-        break;
-
-      case "camera": // CAMERA CAPTURE CODE
-        final XFile? image =
-            await _picker.pickImage(source: ImageSource.camera);
-        setState(() {
-          _image = image;
-        });
-        break;
-    }
   }
 }
