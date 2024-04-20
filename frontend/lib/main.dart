@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/component/view/volunteer_home_view.dart';
+import 'package:frontend/component/view/volunteer_profile_view.dart';
 import 'package:frontend/component/view/volunteer_signup_view.dart';
 
 void main() {
@@ -15,10 +16,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/volunteerHome",
+      initialRoute: "/volunteerProfile",
       routes: {
         "/volunteerSign" : (context) => const VolunteerSignupView(),
-        "/volunteerHome" : (context) => const VolunteerHomeView()
+        "/volunteerHome" : (context) => const VolunteerHomeView(),
+        "/volunteerProfile" : (context) => const VolunteerProfileView()
       },
     );
   }
