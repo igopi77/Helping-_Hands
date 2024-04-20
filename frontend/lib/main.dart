@@ -1,7 +1,6 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/component/view/lat_long_specifier.dart';
+import 'package:frontend/component/view/user_post.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +12,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/",
+      initialRoute: "/post",
       routes: {
-
+        '/redirect' : (context) => const RedirectionMap(),
+        '/post' :(context) => const Post(),
       },
     );
   }
