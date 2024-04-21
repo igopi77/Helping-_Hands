@@ -4,8 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:frontend/component/utils/User.dart';
+import 'package:frontend/component/view/adminViewDetails.dart';
 import 'package:frontend/component/view/lat_long_specifier.dart';
 import 'package:frontend/component/view/login_view.dart';
+import 'package:frontend/service/admin_service.dart';
+import 'package:frontend/service/change_availability_service.dart';
+import 'package:frontend/service/revoke_availability.dart';
 
 class VolunteerHomeView extends StatefulWidget {
   const VolunteerHomeView({Key? key});
@@ -126,29 +130,55 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
                   ),
                 ],
               )
-            : AlertDialog(
-                title: const Text("Are you sure you want to help him?"),
+            : (User.type? AlertDialog(
+                title: const Text("Do you want to track ?"),
                 actions: [
                   TextButton(
                     onPressed: () {
+                      Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
                     child: const Text("No"),
                   ),
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await get_assign(User.postDetails[index]['id']);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RedirectionMap(User.postDetails[index]["location"]["long"],
-                              User.postDetails[index]["location"]["lat"]),
+                          builder: (context) => const AdminViewDetails(),
                         ),
                       );
                     },
                     child: const Text("Yes"),
                   ),
                 ],
-              );
+              ) : AlertDialog(
+                title: const Text("Are you sure you want to help him?"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () async{
+                      await changeAvailability(User.postDetails[index]['id'],User.username);
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RedirectionMap(User.postDetails[index]["location"]["long"],
+                              User.postDetails[index]["location"]["lat"]),
+                        ),
+                      );
+          
+                    },
+                    child: const Text("Yes"),
+                  ),
+                ],
+              )) ;
       },
     );
   }

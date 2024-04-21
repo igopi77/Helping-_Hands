@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/component/utils/User.dart';
+import 'package:frontend/component/view/login_view.dart';
 import 'package:frontend/service/dashboard_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -76,7 +77,9 @@ class _LandingViewState extends State<LandingView> {
             child: Align(
               alignment: Alignment.topRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginView()));
+                },
                 child: const Text(
                   "Login",
                   style: TextStyle(fontFamily: "Raleway", fontSize: 17, color: Colors.black),

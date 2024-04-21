@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/component/utils/User.dart';
 
 class AdminViewDetails extends StatefulWidget {
   const AdminViewDetails({super.key});
@@ -32,7 +33,7 @@ class _AdminViewDetailsState extends State<AdminViewDetails> {
             borderRadius: BorderRadius.circular(10),
             color: Color(0xFF031149)
           ),
-          child: Text(" Assigned ",style: TextStyle(fontFamily: "Raleway",fontSize: 18,color: Colors.white),),
+          child: const Text(" Assigned ",style: TextStyle(fontFamily: "Raleway",fontSize: 18,color: Colors.white),),
         ),
         assignedVolunteers(),
         Padding(padding: EdgeInsets.only(top: 15)),
@@ -41,25 +42,13 @@ class _AdminViewDetailsState extends State<AdminViewDetails> {
               borderRadius: BorderRadius.circular(10),
               color: Color(0xFF031149)
           ),
-          child: Text(" Availability ",style: TextStyle(fontFamily: "Raleway",fontSize: 18,color: Colors.white),),
+          child: const Text(" Availability ",style: TextStyle(fontFamily: "Raleway",fontSize: 18,color: Colors.white),),
         ),
         availabilityVolunteers(),
       ],
     );
   }
   Widget availabilityVolunteers(){
-    List<String> info = [
-      "Gopinath S",
-      "Kamalesh R",
-      "Muthuvel A",
-      "Prakash S"
-    ];
-    List<String> out = [
-      "543542313",
-      "421231244",
-      "872394824",
-      "432342325"
-    ];
     return Padding(
       padding: const EdgeInsets.only(left: 15,right: 15),
       child: Container(
@@ -78,12 +67,12 @@ class _AdminViewDetailsState extends State<AdminViewDetails> {
         child: Padding(
           padding: const EdgeInsets.only(left: 15,right: 15),
           child: Column(
-            children: List.generate(info.length, (index) {
+            children: List.generate(User.unAssigned.length, (index) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(info[index],style: TextStyle(fontFamily: "Raleway",fontSize: 17),),
-                  Text(out[index],style: TextStyle(fontFamily: "Raleway-SemiBold",fontSize: 17),)
+                  Text(User.unAssigned[index]["name"],style: TextStyle(fontFamily: "Raleway",fontSize: 17),),
+                  Text(User.unAssigned[index]["phoneno"],style: TextStyle(fontFamily: "Raleway-SemiBold",fontSize: 17),)
                 ],
               );
             }),
@@ -94,18 +83,6 @@ class _AdminViewDetailsState extends State<AdminViewDetails> {
   }
   }
   Widget assignedVolunteers(){
-    List<String> info = [
-      "Gopinath S",
-      "Kamalesh R",
-      "Muthuvel A",
-      "Prakash S"
-    ];
-    List<String> out = [
-      "543542313",
-      "421231244",
-      "872394824",
-      "432342325"
-    ];
     return Padding(
       padding: const EdgeInsets.only(left: 15,right: 15),
       child: Container(
@@ -124,12 +101,12 @@ class _AdminViewDetailsState extends State<AdminViewDetails> {
         child: Padding(
           padding: const EdgeInsets.only(left: 15,right: 15),
           child: Column(
-            children: List.generate(info.length, (index) {
+            children: List.generate(User.assigned.length, (index) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(info[index],style: TextStyle(fontFamily: "Raleway",fontSize: 17),),
-                  Text(out[index],style: TextStyle(fontFamily: "Raleway-SemiBold",fontSize: 17),)
+                  Text(User.assigned[index]["name"],style: const TextStyle(fontFamily: "Raleway",fontSize: 17),),
+                  Text(User.assigned[index]['phoneno'],style: const TextStyle(fontFamily: "Raleway-SemiBold",fontSize: 17),)
                 ],
               );
             }),
