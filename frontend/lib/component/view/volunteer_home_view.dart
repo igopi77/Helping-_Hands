@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/component/view/lat_long_specifier.dart';
 
 class VolunteerHomeView extends StatefulWidget {
@@ -9,8 +11,20 @@ class VolunteerHomeView extends StatefulWidget {
 }
 
 class _VolunteerHomeViewState extends State<VolunteerHomeView> {
+  List<String> img = [
+    "assets/images/p1.png",
+    "assets/images/p2.png",
+    "assets/images/p3.png"
+  ];
+
+  @override
+  void initState(){
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text("HELPING HANDS",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.white,fontFamily: "Raleway"),),
@@ -19,18 +33,13 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-          child: bodyPartForHome()),
+          child: bodyPartForHome(height,width)),
     );
   }
-  
-  Widget bodyPartForHome(){
-    List<String> img = [
-      "assets/images/p1.png",
-      "assets/images/p2.png",
-      "assets/images/p3.png"
-    ];
+
+  Widget bodyPartForHome(double height, double width) {
     return Padding(
-      padding: const EdgeInsets.only(left: 15,right: 15,top: 15),
+      padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
       child: Column(
         children: List.generate(img.length, (index) {
           return Column(
@@ -40,33 +49,57 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
                   dialog();
                 },
                 child: Container(
-                  height: 400,
+                  height: height / 3,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black,width: 1),
-                    color: Colors.grey
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 2), // changes position of shadow
+                      ),
+                    ],
                   ),
                   child: Column(
-                   // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30,left: 15),
-                        child: Image(
-                          image: AssetImage(img[index]),
-                          height: 300,
-                          alignment: Alignment.center,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Image(
+                            image: AssetImage(img[index]),
+                            fit: BoxFit.contain, // Fit the image into the container
+                            alignment: Alignment.center,
+                          ),
                         ),
                       ),
-                      const Padding(padding: EdgeInsets.only(top: 15)),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15,right: 15),
-                        child: Container(
+                      Row(
+                        children: [
+                          Padding(padding: EdgeInsets.only(left: 15)),
+                          GestureDetector(
+                            onTap: () {
 
-                          width: double.infinity,
-                            color: Colors.white,
-                            child: const Icon(Icons.location_on)),
+                            },
+                            child: Icon(
+                             Icons.location_on,
+                             color: Color(0xFF031149)
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.only(left: 15)),
+                          GestureDetector(
+                            onTap: () {
+
+                            },
+                            child: Icon(
+                              Icons.arrow_upward,
+                              color: Color(0xFF031149)
+                            ),
+                          )
+                        ],
                       ),
+                      Padding(padding: EdgeInsets.only(top: 15))
                     ],
                   ),
                 ),
@@ -78,6 +111,7 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
       ),
     );
   }
+
   Future dialog(){
     return showDialog(
       context: context,
