@@ -70,7 +70,7 @@ class _LandingViewState extends State<LandingView> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(padding: EdgeInsets.only(top: 9)),
+          const Padding(padding: EdgeInsets.only(top: 9)),
           GestureDetector(
             onTap: () {},
             child: Align(
@@ -204,12 +204,13 @@ class _LandingViewState extends State<LandingView> {
         }
       });
     } else {
-      // Show error message or handle accordingly
     }
   }
 
   Future<bool> _getCurrentPosition() async {
     try {
+      await Geolocator.checkPermission();
+      await Geolocator.requestPermission();
       Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       print(position.latitude);
       print(position.longitude);
