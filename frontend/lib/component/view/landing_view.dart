@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:frontend/component/utils/User.dart';
 import 'package:frontend/component/view/login_view.dart';
 import 'package:frontend/service/dashboard_service.dart';
@@ -17,15 +20,88 @@ class LandingView extends StatefulWidget {
   State<LandingView> createState() => _LandingViewState();
 }
 
+
+
 class _LandingViewState extends State<LandingView> {
   late double latitude;
   late double longitude;
+  late String _imageUrl;
+  late Map<String,IfdTag> _exifData;
   int index = 0;
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   late String base64Image;
   XFile? _image;
   bool flag = false;
+  bool flagimage=true;
+  Future<void> _extractExifData() async {
+  if (_imageUrl != null) {
+    final file = await DefaultCacheManager().getSingleFile(_imageUrl!);
+    print('Image file path: ${file.path}');
+    final bytes = await file.readAsBytes();
+    print('Bytes read: ${bytes.length}');
+    final data = await readExifFromBytes(Uint8List.fromList(bytes));
+    print("DATA :$data");
+    if (data != null && data.isNotEmpty) {
+      print('EXIF data: $data');
+      final DateTime? dateTimeOriginal = _getDateTimeOriginal(data);
+      if (dateTimeOriginal != null && _isRecentDate(dateTimeOriginal)) {
+        setState(() {
+          _exifData = data;
+        });
+      } else {
+        flagimage=false;
+        print('Image is not recent');
+        _showAlertDialog(context, 'Image is not recent');
+      }
+    } else {
+      flagimage=false;
+      print('Not an image from a camera');
+      setState(() {
+        _exifData = {};
+      });
+      _showAlertDialog(context, 'Not an image from a camera');
+    }
+  }
+}
+
+DateTime? _getDateTimeOriginal(Map<String, IfdTag> exifData) {
+  final IfdTag? dateTimeOriginalTag = exifData['DateTimeOriginal'];
+  if (dateTimeOriginalTag != null) {
+    final String? dateTimeOriginalString = dateTimeOriginalTag.toString();
+    if (dateTimeOriginalString != null) {
+      return DateTime.tryParse(dateTimeOriginalString);
+    }
+  }
+  return null;
+}
+
+bool _isRecentDate(DateTime dateTime) {
+  final DateTime now = DateTime.now();
+  final Duration difference = now.difference(dateTime);
+  return difference.inDays <= 1;
+}
+
+void _showAlertDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Alert'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +229,8 @@ class _LandingViewState extends State<LandingView> {
         ],
       ),
     );
+
+
   }
 
   Future<bool> _handleLocationPermission() async {
@@ -188,7 +266,9 @@ class _LandingViewState extends State<LandingView> {
     if (image != null) {
       setState(() {
         _image = image;
+        _imageUrl = image.path;
       });
+       await _extractExifData();
       List<int> imageBytes = await image.readAsBytes();
       base64Image = base64Encode(imageBytes);
       print('Base64 Image: $base64Image');
@@ -196,7 +276,7 @@ class _LandingViewState extends State<LandingView> {
   }
 
   void submit() {
-    if (_image != null) {
+    if (_image != null && flagimage) {
       _handleLocationPermission().then((granted) {
         if (granted) {
           _getCurrentPosition().then((positionGranted) {
@@ -207,6 +287,7 @@ class _LandingViewState extends State<LandingView> {
         }
       });
     } else {
+        _showAlertDialog(context, "UPLOAD VALID IMAGE!!! FROM GALLERY");
     }
   }
 
@@ -238,3 +319,6 @@ class _LandingViewState extends State<LandingView> {
     }
   }
 }
+
+
+
