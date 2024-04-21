@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:marquee/marquee.dart';
+
+import '../../service/user_post_service.dart';
 
 class LandingView extends StatefulWidget {
   const LandingView({super.key});
@@ -20,10 +20,20 @@ class _LandingViewState extends State<LandingView> {
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
   GlobalKey<ScaffoldMessengerState>();
+  late String base64Image;
   XFile? _image;
+  
+  bool flag = false;
 
   @override
   Widget build(BuildContext context) {
+  bool flag = false;
+  late String base64Image;
+  late double latitude;
+  late double longitude;
+  final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  XFile? _image; 
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -35,7 +45,7 @@ class _LandingViewState extends State<LandingView> {
       ),
       body: bodyPartForLanding(height,width),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.emergency),
             label: 'Emergency',
@@ -77,7 +87,7 @@ class _LandingViewState extends State<LandingView> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.black,width: 1),
-                color: Color(0xFF031149)
+                color: const Color(0xFF031149)
               ),
               child: Text(
                 " Upload disaster image ",
@@ -105,7 +115,7 @@ class _LandingViewState extends State<LandingView> {
                     "Select image",
                   ),
                   onPressed: () {
-                    getImage();
+                    getImageAndPost();
                   },
                 ),
               ),
@@ -120,12 +130,13 @@ class _LandingViewState extends State<LandingView> {
                   height: height / 4, // Adjust height as needed
                 ),
               ),
-            Padding(padding: EdgeInsets.only(top: 15)),
+            const Padding(padding: EdgeInsets.only(top: 15)),
             ElevatedButton(
               onPressed: () {
                 _handleLocationPermission().then((granted) {
                   if (granted) {
                     _getCurrentPosition();
+                    submit();
                   }
                 });
               },
@@ -168,28 +179,58 @@ class _LandingViewState extends State<LandingView> {
     _scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _getCurrentPosition() async {
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) {
+  Future<void> getImageAndPost() async {
+    if (!flag) {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        setState(() {
+          _image = image;
+          flag = true;
+        });
+        List<int> imageBytes = await image.readAsBytes();
+        base64Image = base64Encode(imageBytes);
+        print('Base64 Image: $base64Image');
+      }
+    } else {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        setState(() {
+          _image = image;
+        });
+        List<int> imageBytes = await image.readAsBytes();
+        base64Image = base64Encode(imageBytes);
+        print('Base64 Image: $base64Image');
+      }
+    }
+  }
+
+  void submit() {
+    if (_image != null) {
+      _handleLocationPermission().then((granted) {
+        if (granted) {
+          _getCurrentPosition().then((positionGranted) {
+            if (positionGranted) {
+              UserPost(base64Image, latitude, longitude);
+            }
+          });
+        }
+      });
+    } else {
+      // Show error message or handle accordingly
+    }
+  }
+
+    Future<bool> _getCurrentPosition() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       print(position.latitude);
       print(position.longitude);
       latitude = position.latitude;
       longitude = position.longitude;
-    }).catchError((e) {
+      return true;
+    } catch (e) {
       debugPrint(e.toString());
-    });
-  }
-
-  Future<void> getImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _image = image;
-      });
-      List<int> imageBytes = await image.readAsBytes();
-
-      String base64Image = base64Encode(imageBytes);
-
-      print('Base64 Image: $base64Image');
+      return false;
     }
   }
 }
