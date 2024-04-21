@@ -5,5 +5,6 @@ class User{
   static String phone = "";
   static bool type = false;
   static List<dynamic> topscore = [];
-  static String Ip = "http://192.168.31.55:3002";
+  static String Ip = "http://10.18.0.200:3002";
+  static List<Map <String,dynamic>> postDetails = [];
 }
