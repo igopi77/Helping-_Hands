@@ -35,54 +35,62 @@ class _LandingViewState extends State<LandingView> {
   bool flag = false;
   bool flagimage=true;
   Future<void> _extractExifData() async {
-  if (_imageUrl != null) {
-    final file = await DefaultCacheManager().getSingleFile(_imageUrl!);
-    print('Image file path: ${file.path}');
-    final bytes = await file.readAsBytes();
-    print('Bytes read: ${bytes.length}');
-    final data = await readExifFromBytes(Uint8List.fromList(bytes));
-    print("DATA :$data");
-    if (data != null && data.isNotEmpty) {
-      print('EXIF data: $data');
-      final DateTime? dateTimeOriginal = _getDateTimeOriginal(data);
-      if (dateTimeOriginal != null && _isRecentDate(dateTimeOriginal)) {
-        setState(() {
-          _exifData = data;
-        });
+    if (_imageUrl != null) {
+      final file = await DefaultCacheManager().getSingleFile(_imageUrl!);
+      print('Image file path: ${file.path}');
+      final bytes = await file.readAsBytes();
+      print('Bytes read: ${bytes.length}');
+      final data = await readExifFromBytes(Uint8List.fromList(bytes));
+      print("DATA :$data");
+      if (data != null && data.isNotEmpty) {
+        print('EXIF data: $data');
+        final String? dateTimeOriginal = _getDateTimeOriginal(data);
+        print("dateTimeOriginal: $dateTimeOriginal");
+        if (dateTimeOriginal != null && _isRecentDate(dateTimeOriginal )) {
+          setState(() {
+            _exifData = data;
+          });
+        } else {
+          flagimage=false;
+          print('Image is not recent');
+          _showAlertDialog(context, 'Image is not recent');
+        }
       } else {
         flagimage=false;
-        print('Image is not recent');
-        _showAlertDialog(context, 'Image is not recent');
+        print('Not an image from a camera');
+        setState(() {
+          _exifData = {};
+        });
+        _showAlertDialog(context, 'Not an image from a camera');
       }
-    } else {
-      flagimage=false;
-      print('Not an image from a camera');
-      setState(() {
-        _exifData = {};
-      });
-      _showAlertDialog(context, 'Not an image from a camera');
     }
   }
-}
 
-DateTime? _getDateTimeOriginal(Map<String, IfdTag> exifData) {
-  final IfdTag? dateTimeOriginalTag = exifData['DateTimeOriginal'];
-  if (dateTimeOriginalTag != null) {
-    final String? dateTimeOriginalString = dateTimeOriginalTag.toString();
-    if (dateTimeOriginalString != null) {
-      return DateTime.tryParse(dateTimeOriginalString);
+
+  String? _getDateTimeOriginal(Map<String, IfdTag> exifData) {
+    final IfdTag? dateTimeOriginalTag = exifData['EXIF DateTimeOriginal'];
+    print("GETDATE FUNTION $dateTimeOriginalTag");
+    if (dateTimeOriginalTag != null) {
+      final String? dateTimeOriginalString = dateTimeOriginalTag.toString();
+      print("GETDATA IF $dateTimeOriginalString");
+      if (dateTimeOriginalString != null && dateTimeOriginalString.isNotEmpty) {
+        print("INSIDE IF IF");
+        return dateTimeOriginalString;
+      }
     }
+    return null;
   }
-  return null;
-}
 
-bool _isRecentDate(DateTime dateTime) {
-  final DateTime now = DateTime.now();
-  final Duration difference = now.difference(dateTime);
-  return difference.inDays <= 1;
-}
 
-void _showAlertDialog(BuildContext context, String message) {
+  bool _isRecentDate(String dateTime) {
+    List<String>datedata=dateTime.split(' ');
+    List<String> yearmonthadate=datedata[0].split(':');
+    DateTime now=DateTime.now();
+    if(int.parse(yearmonthadate[0])==now.year &&int.parse(yearmonthadate[1])==now.month &&int.parse(yearmonthadate[2])>=now.day-1) return true;
+    else return false;
+  }
+
+  void _showAlertDialog(BuildContext context, String message) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -271,7 +279,7 @@ void _showAlertDialog(BuildContext context, String message) {
        await _extractExifData();
       List<int> imageBytes = await image.readAsBytes();
       base64Image = base64Encode(imageBytes);
-      print('Base64 Image: $base64Image');
+      //print('Base64 Image: $base64Image');
     }
   }
 
