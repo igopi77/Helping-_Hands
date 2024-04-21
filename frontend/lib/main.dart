@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/component/view/adminViewDetails.dart';
 import 'package:frontend/component/view/landing_view.dart';
 import 'package:frontend/component/view/lat_long_specifier.dart';
 import 'package:frontend/component/view/login_view.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/volunteerHome",
+      initialRoute: "/adminViewDetails",
       routes: {
         "/landing" : (context) => const LandingView(),
         "/login" : (context) => const LoginView(),
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         "/volunteerProfile" : (context) => const VolunteerProfileView(),
         '/redirect' : (context) => RedirectionMap(null,null),
         '/post' :(context) => const Post(),
+        "/adminViewDetails" : (context) => const AdminViewDetails()
       },
     );
   }
