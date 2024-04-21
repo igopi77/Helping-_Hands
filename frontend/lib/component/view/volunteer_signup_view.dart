@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/component/utils/User.dart';
+import 'package:frontend/component/view/login_view.dart';
+import 'package:frontend/service/sign_up_service.dart';
 
 class VolunteerSignupView extends StatefulWidget {
   const VolunteerSignupView({super.key});
@@ -14,6 +17,8 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
     TextEditingController username = TextEditingController();
     TextEditingController password = TextEditingController();
     TextEditingController phone = TextEditingController();
+    TextEditingController fullname = TextEditingController();
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -23,8 +28,9 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
             ),
           ),
           child: Column(
-            children: [
+            children: [             
               Padding(padding: EdgeInsets.only(top: width / 2)),
+
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -45,6 +51,27 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
                           fontFamily: "Raleway",
                           fontSize: width / 16,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: width / 15)),
+                      Container(
+                        width: width - 2 * width / 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(width / 40),
+                        ),
+                        child: TextField(
+                          controller: fullname,
+                          textAlign: TextAlign.justify,
+                          decoration: InputDecoration(
+                            label: const Text("Full name"),
+                            labelStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Raleway-SemiBold",
+                              color: const Color(0xFF031149),
+                              fontSize: width / 20,
+                            ),
+                            suffixIcon: const Icon(Icons.phone),
+                          ),
                         ),
                       ),
                       Padding(padding: EdgeInsets.only(top: width / 15)),
@@ -76,8 +103,8 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
                         ),
                         child: TextField(
                           controller: password,
-                          obscureText: true,
                           textAlign: TextAlign.justify,
+                          obscureText: true,
                           decoration: InputDecoration(
                             label: const Text("password"),
                             labelStyle: TextStyle(
@@ -90,7 +117,9 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
                           ),
                         ),
                       ),
+
                       Padding(padding: EdgeInsets.only(top: width / 15)),
+
                       Container(
                         width: width - 2 * width / 20,
                         decoration: BoxDecoration(
@@ -98,7 +127,6 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
                         ),
                         child: TextField(
                           controller: phone,
-                          obscureText: true,
                           textAlign: TextAlign.justify,
                           decoration: InputDecoration(
                             label: const Text("phone number"),
@@ -112,14 +140,20 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
                           ),
                         ),
                       ),
+
                       Padding(padding: EdgeInsets.only(top: width / 10)),
                       Padding(padding: EdgeInsets.only(top: width / 20)),
+
                       SizedBox(
                         width: width - 2 * width / 20,
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-
+                              User.fullname = fullname.text.trim();
+                              User.username = username.text.trim();
+                              User.phone = phone.text.trim();
+                              User.pass = password.text.trim();
+                              UserSignup();
                             });
                           },
                           style: ElevatedButton.styleFrom(
@@ -140,6 +174,16 @@ class _VolunteerSignupViewState extends State<VolunteerSignupView> {
                           ),
                         ),
                       ),
+
+                      const Text("Already have an account"),
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginView()));
+                      }, 
+                      child: const Text(
+                        "Login")
+                      )
                     ],
                   ),
                 ),
