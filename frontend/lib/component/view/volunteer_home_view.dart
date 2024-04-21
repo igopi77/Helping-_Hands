@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:frontend/component/view/adminViewDetails.dart';
 import 'package:frontend/component/view/lat_long_specifier.dart';
 
 class VolunteerHomeView extends StatefulWidget {
@@ -16,6 +17,7 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
     "assets/images/p2.png",
     "assets/images/p3.png"
   ];
+  bool admin = true;
 
   @override
   void initState(){
@@ -46,7 +48,10 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
             children: [
               GestureDetector(
                 onTap: () {
-                  dialog();
+                  admin == false ?
+                  dialog()
+                      :
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminViewDetails()));
                 },
                 child: Container(
                   height: height / 3,
