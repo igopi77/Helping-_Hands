@@ -66,16 +66,25 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
                   child: Column(
                     children: [
                       Align(
+                        alignment: Alignment.topRight,
                         child: GestureDetector(
                           onTap: () async{
-                            await postDelete(User.username,User.postDetails[index]['id'],index) ? Aldialog("Deleted Successfully") : Aldialog("Only assigned person can delete !");
+                            bool success = await postDelete(User.username,User.postDetails[index]['id'],index);
+                            setState(() {
+                              if(success){
+                                User.postDetails.removeAt(index);
+                                Aldialog("Deleted successfully");
+                              }
+                              else{
+                                Aldialog("You are not authorised to delete");
+                              }
+                            });
                           },
-                          child: Icon(
-                            color: const Color(0xFF031149),
+                          child: const Icon(
+                            color: Color(0xFF031149),
                               Icons.delete_outline
                           ),
                         ),
-                        alignment: Alignment.topRight,
                       ),
                       Expanded(
                         child: Padding(

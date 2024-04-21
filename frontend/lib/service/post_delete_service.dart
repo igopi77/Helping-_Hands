@@ -15,6 +15,5 @@ Future<bool> postDelete(String username,String id,int index) async {
   );
 
   var decodedResponse = jsonDecode(response.body);
-  if(decodedResponse["status"]) User.postDetails.removeAt(index);
   return decodedResponse["status"];
 }
