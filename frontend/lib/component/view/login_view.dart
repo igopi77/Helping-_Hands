@@ -129,6 +129,8 @@ class _LoginViewState extends State<LoginView> {
                               User.type = 'Admin'==_selectedCharacter!;
                               validateUser();
                             });
+                            Navigator.pop(context);
+                            Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:

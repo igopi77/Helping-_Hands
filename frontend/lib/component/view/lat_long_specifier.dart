@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/component/viewmodel/map_redirect.dart';
 
+// ignore: must_be_immutable
 class RedirectionMap extends StatefulWidget {
   RedirectionMap(this.lat, this.lon, {super.key});
   // ignore: prefer_typing_uninitialized_variables
