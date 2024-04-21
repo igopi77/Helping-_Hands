@@ -9,6 +9,7 @@ import 'package:frontend/component/view/lat_long_specifier.dart';
 import 'package:frontend/component/view/login_view.dart';
 import 'package:frontend/service/admin_service.dart';
 import 'package:frontend/service/change_availability_service.dart';
+import 'package:frontend/service/post_delete_service.dart';
 import 'package:frontend/service/revoke_availability.dart';
 
 class VolunteerHomeView extends StatefulWidget {
@@ -64,6 +65,18 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
                   ),
                   child: Column(
                     children: [
+                      Align(
+                        child: GestureDetector(
+                          onTap: () async{
+                            await postDelete(User.username,User.postDetails[index]['id'],index) ? Aldialog("Deleted Successfully") : Aldialog("Only assigned person can delete !");
+                          },
+                          child: Icon(
+                            color: const Color(0xFF031149),
+                              Icons.delete_outline
+                          ),
+                        ),
+                        alignment: Alignment.topRight,
+                      ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(15),
@@ -106,6 +119,27 @@ class _VolunteerHomeViewState extends State<VolunteerHomeView> {
       ),
     );
   }
+
+  Future Aldialog(String message) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Alert"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Future dialog(BuildContext context, int index) { // Add index parameter
     return showDialog(
