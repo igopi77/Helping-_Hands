@@ -40,7 +40,6 @@ dependencies:
   image_field: ^0.0.10
   geolocator: ^11.0.0
   geocoding: ^3.0.0
-  flutter_sms: ^2.3.3
   marquee: ^2.2.3
   exif: ^3.3.0
   flutter_cache_manager: ^3.3.1
